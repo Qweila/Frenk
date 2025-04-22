@@ -41,6 +41,9 @@
   <div id="countdown">00:00:00:00</div>
   <div id="negroni-time">NEGRONI TIME 🍹</div>
 
+  <!-- Audio personalizzato -->
+  <audio id="negroni-audio" src="TUO_LINK_AUDIO.mp3"></audio>
+
   <script>
     const deadline = new Date("2025-04-25T09:30:00").getTime();
 
@@ -52,10 +55,25 @@
         clearInterval(timerInterval);
         document.getElementById("countdown").textContent = "00:00:00:00";
         document.getElementById("negroni-time").style.display = "block";
+
+        // Riproduzione audio
+        const audio = document.getElementById("negroni-audio");
+        audio.play().catch(err => {
+          console.warn("Autoplay bloccato. L'utente deve interagire prima.", err);
+        });
         return;
       }
 
       const days = String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(2, '0');
       const hours = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
       const minutes = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
-      const seconds = String(Math.floor((distance % (1000
+      const seconds = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0');
+
+      document.getElementById("countdown").textContent = `${days}:${hours}:${minutes}:${seconds}`;
+    }
+
+    const timerInterval = setInterval(updateCountdown, 1000);
+    updateCountdown();
+  </script>
+</body>
+</html>
