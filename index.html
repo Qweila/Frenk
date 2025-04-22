@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Countdown Negroni</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      flex-direction: column;
+    }
+
+    #countdown {
+      font-size: 4em;
+      text-align: center;
+    }
+
+    #negroni-time {
+      display: none;
+      font-size: 3em;
+      color: red;
+      animation: blink 1s infinite;
+      margin-top: 20px;
+    }
+
+    @keyframes blink {
+      0%   { opacity: 1; }
+      50%  { opacity: 0; }
+      100% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div id="countdown">00:00:00:00</div>
+  <div id="negroni-time">NEGRONI TIME 🍹</div>
+
+  <script>
+    const deadline = new Date("2025-04-25T09:30:00").getTime();
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const distance = deadline - now;
+
+      if (distance < 0) {
+        clearInterval(timerInterval);
+        document.getElementById("countdown").textContent = "00:00:00:00";
+        document.getElementById("negroni-time").style.display = "block";
+        return;
+      }
+
+      const days = String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(2, '0');
+      const hours = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+      const minutes = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+      const seconds = String(Math.floor((distance % (1000
