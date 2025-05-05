@@ -6,16 +6,19 @@
   <title>Countdown Negroni</title>
   <style>
     body {
-      background-color: black;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
       margin: 0;
       font-family: Arial, sans-serif;
+      background-color: black;
+      color: white;
+    }
+
+    .center-screen {
+      display: flex;
       flex-direction: column;
+      justify-content: center;
+      align-items: center;
       text-align: center;
+      height: 100vh;
     }
 
     #countdown {
@@ -30,12 +33,6 @@
       margin-top: 20px;
     }
 
-    @keyframes blink {
-      0%   { opacity: 1; }
-      50%  { opacity: 0; }
-      100% { opacity: 1; }
-    }
-
     #negroni-start-button {
       background: linear-gradient(45deg, #ff4e50, #f9d423);
       border: none;
@@ -48,11 +45,13 @@
       box-shadow: 0 0 15px rgba(255, 78, 80, 0.6);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
       animation: pulse 1.5s infinite;
+      display: none;
     }
 
-    #negroni-start-button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 25px rgba(249, 212, 35, 0.8);
+    @keyframes blink {
+      0%   { opacity: 1; }
+      50%  { opacity: 0; }
+      100% { opacity: 1; }
     }
 
     @keyframes pulse {
@@ -60,20 +59,91 @@
       50% { box-shadow: 0 0 25px rgba(249, 212, 35, 0.9); }
       100% { box-shadow: 0 0 10px rgba(255, 78, 80, 0.6); }
     }
+
+    .menu-button {
+      font-size: 2em;
+      padding: 10px 20px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: white;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1001;
+      display: none;
+    }
+
+    .side-menu {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background-color: #111;
+      overflow-x: hidden;
+      transition: 0.3s;
+      padding-top: 60px;
+      z-index: 1000;
+    }
+
+    .side-menu a {
+      padding: 15px 25px;
+      text-decoration: none;
+      font-size: 1.5em;
+      color: white;
+      display: block;
+      transition: 0.3s;
+    }
+
+    .side-menu a:hover {
+      background-color: #575757;
+    }
+
+    #map {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 100vw;
+      z-index: 0;
+      display: none;
+    }
+
+    #main-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
   </style>
 </head>
 <body>
-  <div id="countdown">00:00:00:00</div>
-  <div id="negroni-time">NEGRONI TIME 🍹</div>
 
-  <a id="negroni-button" href="https://esempio.com" target="_blank" style="display: none;">
-    <button id="negroni-start-button">Inizia il gioco 🍸</button>
-  </a>
+  <!-- Schermata iniziale con countdown -->
+  <div id="main-screen" class="center-screen">
+    <div id="countdown">00:00:00:00</div>
+    <div id="negroni-time">NEGRONI TIME 🍹</div>
+    <button id="negroni-start-button" onclick="startGame()">Inizia il gioco 🍸</button>
+  </div>
+
+  <!-- Bottone menu -->
+  <button class="menu-button" onclick="toggleMenu()">☰</button>
+
+  <!-- Menu laterale -->
+  <div id="menu" class="side-menu">
+    <a href="#" onclick="goHome()">HOME</a>
+    <a href="#" onclick="showMap()">MAPPA</a>
+  </div>
+
+  <!-- Contenitore mappa -->
+  <div id="map"></div>
 
   <audio id="negroni-audio" src="TUO_LINK_AUDIO.mp3"></audio>
 
   <script>
-    const deadline = new Date("2025-05-05T15:56:00").getTime();
+    const deadline = new Date("2025-05-16T09:30:00").getTime();
 
     function updateCountdown() {
       const now = new Date().getTime();
@@ -83,7 +153,7 @@
         clearInterval(timerInterval);
         document.getElementById("countdown").textContent = "00:00:00:00";
         document.getElementById("negroni-time").style.display = "block";
-        document.getElementById("negroni-button").style.display = "inline-block";
+        document.getElementById("negroni-start-button").style.display = "inline-block";
 
         const audio = document.getElementById("negroni-audio");
         audio.play().catch(err => {
@@ -102,6 +172,58 @@
 
     const timerInterval = setInterval(updateCountdown, 1000);
     updateCountdown();
+
+    function startGame() {
+      document.getElementById("main-screen").style.display = "none";
+      document.querySelector(".menu-button").style.display = "block";
+    }
+
+    function toggleMenu() {
+      const menu = document.getElementById("menu");
+      menu.style.width = menu.style.width === "250px" ? "0" : "250px";
+    }
+
+    function showMap() {
+      document.getElementById("map").style.display = "block";
+      toggleMenu();
+      if (!window.mapInitialized) {
+        setTimeout(() => {
+          initMap();
+          window.mapInitialized = true;
+        }, 200);
+      }
+    }
+
+    function goHome() {
+      document.getElementById("map").style.display = "none";
+      document.getElementById("main-screen").style.display = "flex";
+      document.querySelector(".menu-button").style.display = "none";
+      toggleMenu();
+    }
+
+    function initMap() {
+      const lightStyle = [
+        { "featureType": "all", "elementType": "labels", "stylers": [{ "visibility": "off" }] },
+        { "featureType": "administrative", "elementType": "geometry", "stylers": [{ "lightness": 40 }] },
+        { "featureType": "landscape", "elementType": "geometry", "stylers": [{ "color": "#f0f0f0" }] },
+        { "featureType": "poi", "elementType": "geometry", "stylers": [{ "color": "#e0e0e0" }] },
+        { "featureType": "road", "elementType": "geometry", "stylers": [{ "color": "#ffffff" }] },
+        { "featureType": "transit", "elementType": "geometry", "stylers": [{ "color": "#dcdcdc" }] },
+        { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#aadaff" }] }
+      ];
+
+      const map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: 40.8518, lng: 14.2681 },
+        zoom: 13,
+        styles: lightStyle,
+        disableDefaultUI: true
+      });
+    }
+  </script>
+
+  <!-- Inserisci la tua API key sotto -->
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBA3eG9U-ftYoC-ifjZ8JPFVuvRqJmeXVo&callback=initMap">
   </script>
 </body>
 </html>
