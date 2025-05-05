@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Countdown Negroni</title>
   <style>
     body {
@@ -15,11 +15,11 @@
       margin: 0;
       font-family: Arial, sans-serif;
       flex-direction: column;
+      text-align: center;
     }
 
     #countdown {
       font-size: 4em;
-      text-align: center;
     }
 
     #negroni-time {
@@ -35,17 +35,45 @@
       50%  { opacity: 0; }
       100% { opacity: 1; }
     }
+
+    #negroni-start-button {
+      background: linear-gradient(45deg, #ff4e50, #f9d423);
+      border: none;
+      padding: 15px 30px;
+      font-size: 1.5em;
+      color: white;
+      border-radius: 30px;
+      margin-top: 30px;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(255, 78, 80, 0.6);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      animation: pulse 1.5s infinite;
+    }
+
+    #negroni-start-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(249, 212, 35, 0.8);
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 10px rgba(255, 78, 80, 0.6); }
+      50% { box-shadow: 0 0 25px rgba(249, 212, 35, 0.9); }
+      100% { box-shadow: 0 0 10px rgba(255, 78, 80, 0.6); }
+    }
   </style>
 </head>
 <body>
   <div id="countdown">00:00:00:00</div>
   <div id="negroni-time">NEGRONI TIME 🍹</div>
 
-  <!-- Audio personalizzato -->
+  <a id="negroni-button" href="https://esempio.com" target="_blank" style="display: none;">
+    <button id="negroni-start-button">Inizia il gioco 🍸</button>
+  </a>
+
   <audio id="negroni-audio" src="TUO_LINK_AUDIO.mp3"></audio>
 
   <script>
-    const deadline = new Date("2025-05-16T09:30:00").getTime();
+    const deadline = new Date("2025-05-05T15:56:00").getTime();
 
     function updateCountdown() {
       const now = new Date().getTime();
@@ -55,8 +83,8 @@
         clearInterval(timerInterval);
         document.getElementById("countdown").textContent = "00:00:00:00";
         document.getElementById("negroni-time").style.display = "block";
+        document.getElementById("negroni-button").style.display = "inline-block";
 
-        // Riproduzione audio
         const audio = document.getElementById("negroni-audio");
         audio.play().catch(err => {
           console.warn("Autoplay bloccato. L'utente deve interagire prima.", err);
